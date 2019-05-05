@@ -3,7 +3,7 @@
 #include <math.h>
 #include <unistd.h>
 #include <sys/time.h>
-
+#include <signal.h>
 int main(int argc ,char *argv[]){
 	float time;
 	float space;
@@ -18,14 +18,22 @@ int main(int argc ,char *argv[]){
 		space=atof(argv[2]);
 		printf("values are %f %f \n",time,space);
 	}
-	int counter=(int)(time/space)+1;
+	int counter=ceil(time/space)+1;
 	printf("%d \n",counter);
 	space=space*1000000;
 	struct timeval tv[counter];
 	gettimeofday(&tv[0],NULL);
+	printf("%ld secs %ld usec\n",tv[0].tv_sec,tv[0].tv_usec);
 	for(int i=1;i<counter;i++){
 		usleep(space);
 		gettimeofday(&tv[i],NULL);
-		printf("%ld secs %ld usec\n",tv[i].tv_sec,tv[i].tv_usec/1000);
+		printf("%ld secs %ld usec\n",tv[i].tv_sec,tv[i].tv_usec);
+	}
+	printf("gia na doume ta apotelesmata twra stin apoklisi\n");
+	for(int i=1;i<counter;i++){
+		int sec1=tv[i].tv_sec-tv[i-1].tv_sec;
+		int micro1=tv[i].tv_usec-tv[i-1].tv_usec;
+		int total=sec1*1000000+micro1;
+		printf("h diafora se microsec einai %d\n",total);
 	}
 }
