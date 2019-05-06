@@ -1,0 +1,51 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
+#include <unistd.h>
+#include <sys/time.h>
+#include <signal.h>
+
+void sigalarm_handler(int sig);
+
+int main(int argc ,char *argv[]){
+	FILE *fptr;
+	float time;
+	float space;
+	if(argc<=2){
+		printf("dwse ton sunoliko xrono deigmatolipsias kai to xroniko diastima deigmatolipsias \n");
+		scanf( "%f %f",&time ,&space);
+		printf("values are %f %f\n",time,space);
+	}
+	else
+	{
+		time=atof(argv[1]);
+		space=atof(argv[2]);
+		printf("values are %f %f \n",time,space);
+	}
+	int counter=ceil(time/space)+1;
+	space=space*1000000;
+	int space1=(int)space;
+	struct timeval tv[counter];
+	signal(SIGALRM,sigalarm_handler);
+	for(int i=0;i<counter;i++){
+		gettimeofday(&tv[i],NULL);
+		printf("%ld secs %ld usec\n",tv[i].tv_sec,tv[i].tv_usec);
+		ualarm(space1,0);
+		pause();
+	}
+	long int table[counter-1];
+	fptr=fopen("program.txt","w");
+	if(fptr==NULL)exit(1);
+	for(int i=1;i<counter;i++){
+		long int sec=(tv[i].tv_sec-tv[i-1].tv_sec);
+		long int microsec=(tv[i].tv_usec-tv[i-1].tv_usec);
+		table[i-1]=sec*1000+microsec/1000;
+
+		printf("the diferrence in milisec is %ld\n",table[i-1]);
+		fprintf(fptr,"%ld\n",table[i-1]);
+	}
+	fclose(fptr);
+}
+void sigalarm_handler(int sig){
+	//printf("inside the sigalarm_handler\n");
+}
