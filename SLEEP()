@@ -9,6 +9,7 @@ int main(int argc ,char *argv[]){
 	FILE *fptr;
 	float time;
 	float space;
+	// βαζω 2 τρόπους για να δέχεται τα ορίσματα η συναρτηση.Και μέσω command line argument αλλά και όταν καλείται.
 	if(argc<=2){
 		printf("dwse ton sunoliko xrono deigmatolipsias kai to xroniko diastima deigmatolipsias se sec\n");
 		scanf( "%f %f",&time ,&space);
@@ -19,17 +20,22 @@ int main(int argc ,char *argv[]){
 		space=atof(argv[2]);
 		printf("values are %f %f \n",time,space);
 	}
+	//βρίσκω πόσα δείγματα συνολικά θα συλλεχθούν.
 	long int counter=(int)(time/space)+1;
 	printf("%ld\n",counter);
 	space=space*1000000;
+	//μια μεταβλητη που θα χρησιμοποιηθει στη συνεχεια για να βρίσκω καθε φορα πόση καθυστερηση είχα απο την περίοδο δειγματοληψιας.
 	long int space1=(int)space;
 	long int dif=space1;
+	//ο πίνακας που θα αποθηκευτούν τα δείγματα.
 	struct timeval tv[counter];
 	struct timeval temp;
 	gettimeofday(&tv[0],NULL);
 	for(int i=1;i<counter;i++){
+	//υπολογιζω την usleep  λαμβανοντας υποψην και την διαφορα στην περιοδο δειγματοληψιας 
 		usleep(space1-(dif-space1));
 		gettimeofday(&tv[i],NULL);
+	//υπολογιζω την διαφορα αναμεσα σε διαδοχικα δείγματα.
 		dif=(tv[i].tv_sec-tv[i-1].tv_sec)*1000000+(tv[i].tv_usec-tv[i-1].tv_usec);
 	}
 	long int table[counter-1];
