@@ -11,6 +11,7 @@ int main(int argc ,char *argv[]){
 	FILE *fptr;
 	float time;
 	float space;
+	//βαζω 2 τρόπους για να δεχτώ τα ορίσματα.Ειτε ως command arguments είτε κανονικά ως απλά ορίσματα της συνάρτησης.
 	if(argc<=2){
 		printf("dwse ton sunoliko xrono deigmatolipsias kai to xroniko diastima deigmatolipsias \n");
 		scanf( "%f %f",&time ,&space);
@@ -22,17 +23,22 @@ int main(int argc ,char *argv[]){
 		space=atof(argv[2]);
 		printf("values are %f %f \n",time,space);
 	}
+	//βρίσκω πόσα δείγματα θα συλλεχθουν ώστε να ορίσω το μέγεθος του πίνακα.
 	int counter=ceil(time/space)+1;
 	space=space*1000000;
 	int space1=(int)space;
+	//ορισμος του πινακα που δεχεται τα δείγματα.
 	struct timeval tv[counter];
+	//αρχικοποιηση της ualarm
 	signal(SIGALRM,sigalarm_handler);
 	for(int i=0;i<counter;i++){
 		gettimeofday(&tv[i],NULL);
 		printf("%ld secs %ld usec\n",tv[i].tv_sec,tv[i].tv_usec);
+		//καλω την ualarm για χρόνο ίσο με space1
 		ualarm(space1,0);
 		pause();
 	}
+	//βρισκω τις διαφορες μεταξυ δειγματων και τα καταγραφω σε ενα αρχειο.
 	long int table[counter-1];
 	fptr=fopen("program.txt","w");
 	if(fptr==NULL)exit(1);
@@ -47,5 +53,6 @@ int main(int argc ,char *argv[]){
 	fclose(fptr);
 }
 void sigalarm_handler(int sig){
+//χειρισμος του σηματος που στελνει η ualarm δεν κανει τιποτα αλλα αν δεν το χειριστω τοτε το σημα θε τερματισει το προγραμμα.
 	//printf("inside the sigalarm_handler\n");
 }
